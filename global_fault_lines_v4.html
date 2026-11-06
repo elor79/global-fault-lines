@@ -1,0 +1,456 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>GLOBAL FAULT LINES — Live Geopolitical Atlas</title><style>
+:root{color-scheme:dark;--bg:#060c17;--panel:#101b2bdf;--line:#30425a;--muted:#9db0c6;--white:#eff7ff;--war:#ff526b;--flash:#ffb34f;--human:#bd83ff;--cyan:#6ee5ef}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--white);font-family:Inter,system-ui,-apple-system,sans-serif;overflow:hidden}canvas{display:block}#scene{position:fixed;inset:0}header{position:absolute;top:0;left:0;right:0;padding:24px 30px;pointer-events:none;background:linear-gradient(#060c17dd,transparent)}h1{margin:0;font-size:clamp(23px,3vw,39px);letter-spacing:.12em;font-weight:800}header p{margin:7px 0;color:#9db0c6;font-size:12px;letter-spacing:.12em}.pill{display:inline-flex;align-items:center;gap:7px;background:#192b40;border:1px solid #37516b;border-radius:50px;padding:6px 10px;font-size:11px;color:#c2d4e7;margin-top:12px}.pill i{width:8px;height:8px;border-radius:50%;background:#7a8ca3;display:inline-block}.pill.live i{background:#3ee08f;box-shadow:0 0 10px #3ee08f;animation:blink 2s infinite}.pill.warn i{background:#ffb34f}@keyframes blink{50%{opacity:.35}}
+.sidebar{position:absolute;top:145px;bottom:24px;left:24px;width:330px;background:var(--panel);border:1px solid var(--line);border-radius:18px;backdrop-filter:blur(18px);display:flex;flex-direction:column;overflow:hidden}.sidebar .top{padding:20px 20px 10px}.eyebrow{color:var(--cyan);font-size:10px;font-weight:800;letter-spacing:.17em;text-transform:uppercase}.sidebar h2{font-size:19px;margin:9px 0}.description{font-size:12px;line-height:1.55;color:var(--muted)}.filters{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}.filters button,.controls button,.bottom button,.btn{background:#1a2a40;color:#c9d8e8;border:1px solid #34485f;border-radius:9px;padding:8px 10px;cursor:pointer;font-size:11px;font-family:inherit}.filters button.active{background:#27516b;border-color:#65d8eb;color:white}.regions{overflow:auto;padding:5px 12px 20px}.region{display:flex;align-items:center;gap:11px;width:100%;text-align:left;padding:11px;border:0;border-bottom:1px solid #26374a;background:transparent;color:white;cursor:pointer;font-family:inherit}.region:hover,.region.active{background:#20354b;border-radius:9px}.region .txt{flex:1;min-width:0}.dot{width:9px;height:9px;border-radius:50%;flex:none;box-shadow:0 0 12px currentColor}.region strong{display:block;font-size:12px}.region small{color:#9db0c6;font-size:10px}.metric{flex:none;text-align:right;font-size:10px;color:#c9d8e8;line-height:1.35;font-variant-numeric:tabular-nums}.metric b{display:block;font-size:11px}.up{color:#ff8a7a}.down{color:#7be0a6}.flat{color:#9db0c6}.alarmTag{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.08em;padding:2px 5px;border-radius:5px;margin-left:5px;vertical-align:1px}.alarmTag.prep{background:#ff526b;color:#1b0006}.alarmTag.watch{background:#ffb34f;color:#241400}
+.detail{position:absolute;right:24px;top:145px;width:350px;max-height:calc(100vh - 220px);overflow:auto;padding:22px;background:var(--panel);border:1px solid var(--line);border-radius:18px;backdrop-filter:blur(18px)}.detail h2{font-size:22px;margin:12px 0}.detail p{font-size:13px;line-height:1.65;color:#c5d3e2}.detail h3{font-size:11px;text-transform:uppercase;letter-spacing:.13em;color:var(--cyan);margin:20px 0 7px}.detail .tag{font-size:11px;padding:6px 9px;border:1px solid #506077;border-radius:20px;display:inline-block;color:#e5effb}
+.card{background:#0b1626;border:1px solid #263a52;border-radius:12px;padding:12px;margin:8px 0;font-size:12px;color:#c5d3e2;line-height:1.5}.card .k{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#8fa6bf;margin-bottom:5px;display:flex;justify-content:space-between;gap:8px}.card .big{font-size:22px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums}.card .big span{font-size:11px;font-weight:500;color:#9db0c6}.card small{display:block;color:#8197ae;font-size:10.5px;line-height:1.45;margin-top:5px}.card svg{display:block;width:100%;height:46px;margin-top:6px}.mk{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid #1d3047}.mk:first-of-type{border-top:0}.mk a{color:#dce9f7;text-decoration:none;font-size:12px}.mk b{font-size:15px;font-variant-numeric:tabular-nums}.mk em{font-style:normal;font-size:10px;display:block;color:#8197ae}.hl{display:block;padding:6px 0;border-top:1px solid #1d3047;color:#dce9f7;text-decoration:none;font-size:12px}.hl:first-of-type{border-top:0}.hl span{display:block;font-size:10px;color:#8197ae}.outlook{border-radius:12px;padding:11px 12px;font-weight:800;font-size:14px;margin:8px 0;border:1px solid}.outlook small{display:block;font-weight:500;font-size:11px;margin-top:3px;color:#c5d3e2}.outlook.up{background:#3a141c;border-color:#7a2b3a}.outlook.down{background:#0f2e22;border-color:#2b6b4c}.outlook.flat,.outlook.mixed{background:#18263a;border-color:#34485f;color:#dce9f7}.muted{color:#8197ae}
+.controls{position:absolute;right:25px;bottom:25px;display:flex;gap:8px}.controls button.armed{border-color:#3ee08f;color:#bff5d8}.bottom{position:absolute;left:380px;bottom:24px;background:#0c1928c9;border:1px solid #263c53;border-radius:12px;padding:12px 15px;font-size:11px;color:#c4d3e5;max-width:560px}.legend{display:flex;align-items:center;gap:12px;margin-bottom:7px;flex-wrap:wrap}.swatch{width:10px;height:10px;border-radius:50%}.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid #2c4058;border-radius:20px;padding:4px 8px;font-size:10px;color:#c4d3e5;background:#0a1522}.chip i{width:7px;height:7px;border-radius:50%;background:#7a8ca3}.chip.live i{background:#3ee08f}.chip.cached i{background:#6ee5ef}.chip.loading i{background:#ffb34f;animation:blink 1s infinite}.chip.error i{background:#ff526b}a{color:#7de8f3}
+.acled{position:relative;z-index:3;background:#101b2bef;border:1px solid #30425a;border-radius:18px;padding:18px;margin:12px 24px;color:#dce9f7;max-width:780px}.acled summary{cursor:pointer;font-weight:800;font-size:13px;letter-spacing:.04em}.acled[open] summary{margin-bottom:6px}.acled p,.acled li{font-size:12px;line-height:1.55}.acled ul{padding-left:18px;margin:6px 0}.acled a{color:#79e5f0}
+.acled{padding:10px 14px}@media(min-width:851px){.acled{position:absolute;bottom:128px;left:380px;max-width:470px;max-height:230px;overflow:auto}}
+/* settings + alarm */
+.sheet{position:fixed;z-index:30;right:24px;bottom:75px;width:360px;max-height:calc(100vh - 120px);overflow:auto;background:#0f1a2af5;border:1px solid #3a5270;border-radius:16px;padding:18px;backdrop-filter:blur(18px);font-size:12px;line-height:1.5;color:#c5d3e2;box-shadow:0 20px 60px #0009}.sheet h2{margin:0 0 6px;font-size:16px;color:#fff}.sheet h3{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);margin:16px 0 6px}.sheet input[type=text],.sheet input[type=url],.sheet select{width:100%;background:#0a1522;border:1px solid #34485f;border-radius:8px;color:#fff;padding:8px;font:inherit}.sheet .row{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}.sheet .btn.primary{background:#fff;color:#111;border-color:#fff;font-weight:700}.sheet .log{font-size:11px;max-height:160px;overflow:auto}.sheet .log div{padding:5px 0;border-top:1px solid #1d3047}
+#alarm{position:fixed;z-index:40;left:50%;top:14px;transform:translateX(-50%);width:min(640px,calc(100% - 20px));border-radius:16px;padding:16px 18px;border:2px solid;box-shadow:0 20px 70px #000b;font-size:13px;line-height:1.5}#alarm.prep{background:#2a0b12f7;border-color:#ff526b;animation:pulseB 1.2s infinite}#alarm.watch{background:#2a1c08f7;border-color:#ffb34f}@keyframes pulseB{50%{box-shadow:0 0 0 6px #ff526b44,0 20px 70px #000b}}#alarm .lvl{font-size:11px;font-weight:900;letter-spacing:.18em}#alarm h2{margin:3px 0 6px;font-size:20px}#alarm ul{margin:6px 0;padding-left:18px}#alarm .row{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}#alarm .btn.primary{background:#fff;color:#111;border-color:#fff;font-weight:700}#alarm ol{padding-left:18px;margin:8px 0}#alarm ol li{margin:4px 0}#alarm .fine{font-size:10.5px;color:#d9c3c7;margin-top:8px}
+@media(max-width:850px){header{padding:15px}header h1{font-size:22px}.sidebar{left:10px;top:auto;bottom:12px;width:calc(100% - 20px);height:230px}.sidebar .top{padding:10px 14px 0}.sidebar h2,.sidebar .description{display:none}.regions{display:flex;overflow-x:auto;padding:4px}.region{min-width:160px;border-bottom:0}.detail{top:95px;right:10px;width:245px;max-height:calc(100vh - 355px);padding:13px}.detail h2{font-size:17px}.detail p{font-size:11px}.bottom{left:10px;bottom:252px;max-width:210px;font-size:9px;padding:8px}.controls{right:10px;bottom:252px}.controls button{padding:6px}}
+@media(max-width:850px){
+body{overflow:auto;min-height:100dvh;overscroll-behavior-y:contain}
+#scene{position:fixed;inset:0;z-index:0;pointer-events:auto}
+header{position:relative;z-index:2;padding:16px;pointer-events:none}
+header h1{font-size:22px}
+.sidebar{position:relative;z-index:3;top:auto;left:auto;bottom:auto;width:calc(100% - 24px);height:auto;max-height:240px;margin:calc(52dvh - 105px) 12px 12px;pointer-events:auto}
+.sidebar .top{padding:12px}
+.sidebar h2,.sidebar .description{display:none}
+.regions{display:flex;overflow-x:auto;min-height:66px}
+.region{min-width:205px}
+.detail{position:relative;z-index:3;top:auto;right:auto;width:calc(100% - 24px);max-height:none;margin:12px;padding:16px;pointer-events:auto}
+.detail p{font-size:13px}
+.bottom{position:relative;z-index:3;left:auto;bottom:auto;max-width:none;margin:12px;padding:12px;pointer-events:auto;font-size:11px}
+.controls{position:fixed;z-index:5;right:12px;top:100px;bottom:auto;display:flex;flex-direction:column}
+.controls button{font-size:15px;padding:7px 9px;min-width:38px}.controls .lbl{display:none} .acled{position:relative;margin:12px} .filters{flex-wrap:nowrap;overflow-x:auto}.filters button{white-space:nowrap} .sidebar{max-height:210px} .regions{min-height:76px} header .pill{font-size:10px}
+.sheet{left:10px;right:10px;width:auto;bottom:10px;top:auto;max-height:80dvh}
+}
+</style></head><body><div id="scene"></div><div id="loaderror" hidden style="position:fixed;z-index:20;top:22%;left:5%;width:90%;background:#1b293b;border:1px solid #f7a34d;padding:20px;border-radius:14px">3D globe could not load. Open this file in Safari or Chrome with an internet connection. Some iPhone file previews block external modules.</div>
+<header><h1>GLOBAL <span style="color:#63e3ed">FAULT LINES</span></h1><p id="dateline">AN INTERACTIVE GEOPOLITICAL ATLAS</p><span class="pill" id="livePill"><i></i><span>CONNECTING TO LIVE SOURCES…</span></span></header>
+<section class="sidebar"><div class="top"><div class="eyebrow">Explore the fault lines</div><h2>Conflict &amp; escalation</h2><p class="description">Marker size follows the VIEWS fatality forecast; pulse speed follows news momentum. Select a region for live signals, crowd forecasts and headlines.</p><div class="filters"><button data-filter="all" class="active">All</button><button data-filter="war">Active conflicts</button><button data-filter="flash">Flashpoints</button><button data-filter="human">Humanitarian</button><button id="sortBtn" title="Change list order">↕ Editorial</button></div></div><div class="regions" id="regions"></div></section>
+<section class="detail" id="detail"><div class="eyebrow">Situation briefing</div><h2>Choose a region</h2><p>Click a hotspot to see its live forecast, news momentum, crowd odds and the latest headlines.</p><p>The map does not equate humanitarian suffering with military escalation potential.</p></section>
+<details class="acled"><summary>Sources &amp; method</summary><ul>
+<li><b>Forecasts:</b> <a href="https://viewsforecasting.org" target="_blank" rel="noopener">VIEWS</a> (Uppsala University / PRIO). Monthly, country-level predictions of state-based battle deaths, 1–36 months ahead. The page loads the newest run automatically.</li>
+<li><b>News momentum &amp; headlines:</b> <a href="https://blog.gdeltproject.org/gdelt-doc-2-0-api-debuts/" target="_blank" rel="noopener">GDELT DOC 2.0</a>. Share of global coverage matching each region's conflict query, updated every 15 min.</li>
+<li><b>Crowd forecasts:</b> <a href="https://polymarket.com" target="_blank" rel="noopener">Polymarket</a>. Live real-money prediction-market odds, where a relevant market exists.</li>
+<li><b>Context:</b> editorial summaries and the <a href="https://acleddata.com/conflict-index-2026-watchlist" target="_blank" rel="noopener">ACLED 2026 Watchlist</a>. These are static.</li></ul>
+<p>The outlook labels and the prep alarm come from simple threshold rules on these feeds, explained on each card. They are signals, not predictions of specific events, and never an official warning.</p></details>
+<div class="bottom"><div class="legend"><span class="swatch" style="background:#ff526b"></span> Active conflict <span class="swatch" style="background:#ffb34f"></span> Strategic flashpoint <span class="swatch" style="background:#bd83ff"></span> Humanitarian exposure</div>Glows show approximate regions, not front lines. Arcs are analytical linkages, not confirmed operations.<div class="chips" id="chips"></div></div>
+<div class="controls"><button id="alarmBtn" title="Prep alarm"></button><button id="settingsBtn" title="Live data settings">⚙<span class="lbl"> Data</span></button><button id="spin" title="Rotation"></button><button id="reset" title="Reset view">◎<span class="lbl"> Reset</span></button></div>
+<section class="sheet" id="sheet" hidden></section>
+<section id="alarm" hidden></section>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+
+/* ───────────────────────── Hotspots ─────────────────────────
+   iso  → VIEWS country codes summed for the forecast ([] = no country model fits)
+   q    → GDELT conflict-news query      pm/pmRe → Polymarket search + relevance filter */
+const data=[
+{id:'ukraine',name:'Russia–Ukraine',lat:49,lon:33,type:'war',scale:1.0,subtitle:'Active interstate war · European security',iso:['UKR','RUS'],q:'(Ukraine OR Ukrainian OR Kyiv) (attack OR strike OR offensive OR drone OR missile OR shelling)',pm:'Ukraine',pmRe:/ukrain|russia|putin|zelensk/i,context:'Russia’s invasion of Ukraine continues to shape European security, displacement, military production and sanctions.',risk:'Continued strikes and attrition; escalation incidents involving NATO territory; pressure on energy and civilian infrastructure.',links:'European security architecture, NATO deterrence, Black Sea exports, sanctions and arms supply.',watch:'Changes in territorial control, long-range attacks, diplomatic negotiations and incidents near NATO borders.'},
+{id:'sudan',name:'Sudan',lat:15,lon:30,type:'human',scale:1.25,subtitle:'Civil war · Mass displacement and hunger',iso:['SDN'],q:'(Sudan OR Darfur OR "El Fasher" OR Khartoum OR "Rapid Support Forces") (attack OR killed OR fighting OR clashes OR drone)',pm:'Sudan',pmRe:/sudan|\brsf\b/i,context:'Fighting between Sudanese Armed Forces and Rapid Support Forces has caused immense civilian suffering and displacement.',risk:'Hunger, attacks on civilians, collapsing health services and further cross-border displacement.',links:'Chad, South Sudan, Egypt, Red Sea security and regional external support networks.',watch:'Humanitarian access, famine assessments, attacks on population centers and displacement flows.'},
+{id:'gaza',name:'Gaza / Israel–Palestine',lat:31.5,lon:34.5,type:'human',scale:.85,subtitle:'Conflict · Severe civilian exposure',iso:['ISR','PSE'],q:'(Gaza OR "West Bank") (killed OR strike OR attack OR ceasefire OR aid)',pm:'Gaza',pmRe:/gaza|hamas|israel/i,context:'The Israeli–Palestinian conflict involves profound civilian harm, security concerns, displacement and unresolved political questions.',risk:'Civilian protection, aid access, renewed fighting, hostage and detainee issues, and spillover into neighboring areas.',links:'Lebanon, Iran, Egypt, Gulf diplomacy and US regional policy.',watch:'Verified ceasefire compliance, humanitarian access, civilian casualties and diplomatic arrangements.'},
+{id:'iran',name:'Iran / Persian Gulf',lat:30,lon:52,type:'war',scale:1.05,subtitle:'Regional military confrontation · Energy chokepoint',iso:['IRN'],q:'(Iran OR Iranian OR Hormuz) (strike OR attack OR missile OR military OR retaliation)',pm:'Iran',pmRe:/iran|hormuz|khamenei/i,context:'US–Iran and Israel–Iran confrontation has major implications for regional security and global energy flows.',risk:'Direct attacks, retaliation, maritime disruption and miscalculation around the Strait of Hormuz.',links:'Israel, Gulf states, US forces, shipping, energy markets and humanitarian logistics.',watch:'Attacks on vessels or energy infrastructure, military deployments and diplomatic de-escalation.'},
+{id:'taiwan',name:'Taiwan Strait',lat:24,lon:121,type:'flash',scale:1.1,subtitle:'Great-power flashpoint · Semiconductor supply chains',iso:[],q:'Taiwan (PLA OR "Chinese military" OR drills OR blockade OR warships OR incursion)',pm:'Taiwan',pmRe:/taiwan/i,context:'China claims Taiwan; Taiwan is self-governed. Military pressure and competing security commitments create an escalation pathway.',risk:'Blockade, maritime or aerial incident, economic coercion or military confrontation with wider involvement.',links:'United States, Japan, semiconductor manufacturing, shipping and the broader Indo-Pacific.',watch:'Exercise patterns, exclusion zones, maritime incidents and changes in official policy.'},
+{id:'myanmar',name:'Myanmar',lat:20,lon:96,type:'human',scale:.95,subtitle:'Civil war · Fragmented territorial control',iso:['MMR'],q:'(Myanmar OR Burma) (airstrike OR fighting OR killed OR offensive OR clashes)',pm:'Myanmar',pmRe:/myanmar|burma/i,context:'Conflict between the military and multiple resistance and ethnic armed groups has fragmented the country.',risk:'Civilian casualties, displacement, food insecurity and cross-border instability.',links:'China, Thailand, India, border trade and refugee movements.',watch:'Airstrikes, territorial changes, humanitarian access and cross-border displacement.'},
+{id:'congo',name:'Eastern DR Congo',lat:-2,lon:29,type:'human',scale:.9,subtitle:'Armed conflict · Regional tensions',iso:['COD'],q:'("DR Congo" OR "eastern Congo" OR Goma OR M23 OR Kivu) (fighting OR killed OR attack OR clashes OR rebels)',pm:'Congo',pmRe:/congo|m23|rwanda/i,context:'Armed groups including M23 and other actors contribute to civilian insecurity in eastern DR Congo.',risk:'Displacement, attacks on civilians and potential regional spillover.',links:'Rwanda, Uganda, mineral supply chains and Great Lakes diplomacy.',watch:'Territorial changes, ceasefire compliance and cross-border incidents.'},
+{id:'sahel',name:'Central Sahel',lat:15,lon:-3,type:'human',scale:1.15,subtitle:'Insurgencies · Governance and food security',iso:['MLI','BFA','NER'],q:'(Mali OR "Burkina Faso" OR Niger OR Sahel) (attack OR jihadist OR killed OR militants OR ambush)',pm:'Mali',pmRe:/\bmali\b|burkina|\bniger\b|sahel/i,context:'Violence across Mali, Burkina Faso and Niger combines insurgency, political instability and pressure on communities.',risk:'Attacks on civilians, displacement, disrupted livelihoods and expansion toward coastal states.',links:'West African regional security, external military partnerships and migration routes.',watch:'Violence against civilians, territorial access and humanitarian corridors.'},
+{id:'korea',name:'Korean Peninsula',lat:38,lon:127,type:'flash',scale:.8,subtitle:'Nuclear deterrence · Military confrontation',iso:['PRK','KOR'],q:'("North Korea" OR Pyongyang OR DPRK) (missile OR launch OR military OR nuclear OR artillery)',pm:'North Korea',pmRe:/north korea|kim jong|dprk/i,context:'North Korea’s nuclear and missile capabilities intersect with South Korean, US, Japanese and Russian security relationships.',risk:'Missile incidents, military miscalculation and nuclear escalation.',links:'US alliances, China, Russia and Northeast Asian trade.',watch:'Weapons tests, military exercises and communication channels.'},
+{id:'kashmir',name:'India–Pakistan / Kashmir',lat:34,lon:74,type:'flash',scale:.85,subtitle:'Nuclear-armed neighbors · Territorial dispute',iso:['IND','PAK'],q:'(Kashmir OR "Line of Control" OR "India Pakistan") (attack OR firing OR militants OR strike OR killed)',pm:'India Pakistan',pmRe:/india|pakistan|kashmir/i,context:'The long-running Kashmir dispute and cross-border tensions involve two nuclear-armed states.',risk:'Border incidents, attacks followed by retaliation and escalation under compressed decision times.',links:'China, regional water security and South Asian trade.',watch:'Border exchanges, diplomatic contact and changes in military posture.'},
+{id:'yemen',name:'Yemen / Red Sea',lat:15,lon:44,type:'war',scale:.8,subtitle:'Protracted conflict · Maritime trade',iso:['YEM'],q:'(Yemen OR Houthi OR Houthis OR "Red Sea") (attack OR strike OR missile OR ship OR drone)',pm:'Houthi',pmRe:/houthi|yemen|red sea/i,context:'Yemen’s conflict and Red Sea security disruptions affect civilian conditions and international shipping.',risk:'Renewed attacks, aid constraints and disruption of the Bab el-Mandeb route.',links:'Red Sea shipping, Suez Canal, Gulf states and international navies.',watch:'Vessel incidents, strikes and humanitarian access.'},
+{id:'haiti',name:'Haiti',lat:19,lon:-72.5,type:'human',scale:.75,subtitle:'Armed-group violence · Institutional crisis',iso:['HTI'],q:'(Haiti OR "Port-au-Prince") (gang OR gangs OR killed OR violence OR attack)',pm:'Haiti',pmRe:/haiti/i,context:'Organized armed violence and weakened institutions create widespread insecurity and humanitarian need.',risk:'Civilian harm, food insecurity, displacement and limited public services.',links:'Caribbean migration, regional security missions and aid flows.',watch:'Territorial access, civilian protection and aid delivery.'},
+{id:'somalia',name:'Somalia',lat:5,lon:46,type:'war',scale:.75,subtitle:'Insurgency · Climate vulnerability',iso:['SOM'],q:'(Somalia OR "al-Shabaab" OR Mogadishu) (attack OR killed OR airstrike OR militants)',pm:'Somalia',pmRe:/somali/i,context:'Armed insurgency, political tensions and climate shocks overlap.',risk:'Attacks, displacement and humanitarian access constraints.',links:'Horn of Africa, Red Sea security and regional forces.',watch:'Attacks on civilians, control of transport routes and food-security alerts.'},
+{id:'southchina',name:'South China Sea',lat:13,lon:114,type:'flash',scale:.85,subtitle:'Maritime disputes · Trade exposure',iso:[],q:'("South China Sea" OR Scarborough OR "Second Thomas Shoal" OR Spratly) ("coast guard" OR collision OR "water cannon" OR navy OR confrontation)',pm:'South China Sea',pmRe:/south china sea|philippines|scarborough/i,context:'Competing maritime claims and coast guard encounters create repeated opportunities for confrontation.',risk:'Collisions, coercive maritime measures and escalation involving treaty partners.',links:'China, Philippines, Vietnam, US security commitments and maritime trade.',watch:'Close encounters, maritime restrictions and diplomatic protests.'},
+{id:'lebanon',name:'Lebanon / Israel border',lat:33.5,lon:35.5,type:'war',scale:.7,subtitle:'Cross-border security · Civilian exposure',iso:['LBN'],q:'(Lebanon OR Hezbollah) (strike OR attack OR killed OR ceasefire OR rocket)',pm:'Hezbollah',pmRe:/hezbollah|lebanon/i,context:'Military confrontation and fragile security arrangements intersect with Lebanon’s internal vulnerabilities.',risk:'Cross-border strikes, displacement and regional escalation.',links:'Israel, Iran, Syria and regional diplomacy.',watch:'Ceasefire monitoring, border incidents and displaced population returns.'},
+{id:'ethiopia',name:'Ethiopia',lat:9,lon:40,type:'human',scale:.8,subtitle:'Internal tensions · Humanitarian pressure',iso:['ETH'],q:'(Ethiopia OR Amhara OR Tigray OR Fano OR Oromia) (fighting OR killed OR clashes OR attack OR drone)',pm:'Ethiopia',pmRe:/ethiopia|eritrea|tigray/i,context:'Regional insecurity, displacement and food insecurity remain important humanitarian and governance concerns.',risk:'Renewed armed clashes, civilian displacement and worsening access to aid.',links:'Horn of Africa security, Sudan displacement and Red Sea access debates.',watch:'Regional violence, humanitarian access and negotiated political settlements.'}
+];
+/* Global "severe escalation" query: fast-resolution trigger for the prep alarm */
+const GLOBAL_Q='("declares war" OR "declared war" OR "full-scale invasion" OR "naval blockade" OR "martial law" OR "general mobilization" OR "nuclear strike" OR "nuclear alert" OR "attack on NATO")';
+
+/*LIVE-PURE-START*/
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const mean=a=>a.length?a.reduce((s,x)=>s+x,0)/a.length:NaN;
+const sd=a=>{const m=mean(a);return Math.sqrt(mean(a.map(x=>(x-m)**2)))};
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function safeUrl(u){try{const x=new URL(u);return /^https?:$/.test(x.protocol)?x.href:'#'}catch{return '#'}}
+function pickRuns(runs){
+  const p=(runs||[]).map(r=>{const m=/^fatalities(\d{3})_(\d{4})_(\d{2})_t(\d+)$/.exec(r);return m&&{run:r,ver:+m[1],key:+m[2]*100+ +m[3],t:+m[4]}}).filter(Boolean);
+  p.sort((a,b)=>b.key-a.key||b.ver-a.ver||b.t-a.t);
+  const latest=p[0];if(!latest)return{};
+  const prev=p.find(x=>x.key<latest.key&&x.ver===latest.ver)||p.find(x=>x.key<latest.key);
+  return{latest:latest.run,prev:prev?.run,label:`${String(latest.key).slice(0,4)}-${String(latest.key).slice(4)}`};
+}
+function viewsSeries(rows,isos){
+  const by=new Map();
+  for(const r of rows||[]){if(!isos.includes(r.isoab))continue;let o=by.get(r.month_id);if(!o){o={mid:r.month_id,y:r.year,m:r.month,mean:0,pNo:1,names:new Set()};by.set(r.month_id,o)}o.mean+=Math.max(0,+r.main_mean||0);o.pNo*=1-clamp(+r.main_dich||0,0,1);o.names.add(r.name)}
+  return[...by.values()].sort((a,b)=>a.mid-b.mid).map(o=>({mid:o.mid,y:o.y,m:o.m,mean:o.mean,p:1-o.pNo,names:[...o.names]}));
+}
+function summarizeViews(rows,isos,prevRows){
+  if(!isos.length)return null;const s=viewsSeries(rows,isos);if(!s.length)return null;
+  const first3=s.slice(0,3),next3=mean(first3.map(x=>x.mean));let revision=null;
+  if(prevRows){const pm=new Map(viewsSeries(prevRows,isos).map(x=>[x.mid,x.mean]));const c=first3.filter(x=>pm.has(x.mid));if(c.length){const a=c.reduce((t,x)=>t+x.mean,0),b=c.reduce((t,x)=>t+pm.get(x.mid),0);revision=(a+5)/(b+5)}}
+  return{series:s.slice(0,12),next3,pNext:s[0].p,start:s[0],revision,names:s[0].names};
+}
+/* timelinevol values are a share of all monitored coverage, so a partial "today" is comparable to full days */
+function summarizeNews(json){
+  const pts=(json?.timeline?.[0]?.data||[]).map(d=>({t:d.date,v:+d.value})).filter(d=>Number.isFinite(d.v));
+  if(pts.length<20)return null;const v=pts.map(p=>p.v);
+  const recent=mean(v.slice(-7)),base=mean(v.slice(-37,-7));
+  const today=v.at(-1),win=v.slice(-31,-1),bm=mean(win),bs=sd(win);
+  return{series:v,recent,base,momentum:base>0?recent/base:null,spike:{ratio:bm>0?today/bm:null,z:bs>0?(today-bm)/bs:null},last:pts.at(-1).t};
+}
+/* fine-resolution series (global query): last 4 points vs the rest */
+function spikeStats(json,k=4){
+  const v=(json?.timeline?.[0]?.data||[]).map(d=>+d.value).filter(Number.isFinite);
+  if(v.length<k*4)return null;const recent=mean(v.slice(-k)),win=v.slice(0,-k),bm=mean(win),bs=sd(win)/Math.sqrt(k);
+  return{series:v,recent,ratio:bm>0?recent/bm:null,z:bs>0?(recent-bm)/bs:null};
+}
+function parseMarkets(json,re,minVol=1000){
+  const out=[],seen=new Set();
+  for(const ev of json?.events||[])for(const m of ev.markets||[]){
+    if(m.closed||m.active===false||m.archived)continue;
+    let o,pr;try{o=typeof m.outcomes==='string'?JSON.parse(m.outcomes):m.outcomes;pr=typeof m.outcomePrices==='string'?JSON.parse(m.outcomePrices):m.outcomePrices}catch{continue}
+    if(!Array.isArray(o)||o.length!==2||!/^yes$/i.test(o[0]))continue;
+    const p=+pr?.[0];if(!Number.isFinite(p))continue;
+    if(m.endDate&&Date.parse(m.endDate)<Date.now())continue;
+    const q=m.question||ev.title||'';if(re&&!re.test(q+' '+(ev.title||'')))continue;
+    const vol=+(m.volumeNum??m.volume??0)||0;if(vol<minVol||seen.has(q))continue;seen.add(q);
+    out.push({q,p,vol,end:m.endDate||null,url:'https://polymarket.com/event/'+encodeURIComponent(ev.slug||'')});
+  }
+  return out.sort((a,b)=>b.vol-a.vol).slice(0,4);
+}
+function outlook(news,fc){
+  const m=news?.momentum??null,r=fc?.revision??null;if(m==null&&r==null)return null;
+  const up=(m!=null&&m>=1.3)+(r!=null&&r>=1.15),dn=(m!=null&&m<=0.77)+(r!=null&&r<=0.87);
+  const cls=up&&!dn?'up':dn&&!up?'down':up&&dn?'mixed':'flat';
+  return{cls,label:{up:'Rising signals',down:'Easing signals',mixed:'Mixed signals',flat:'Steady'}[cls],m,r};
+}
+/* market history: [[t,p],…] → change vs ~24h ago (needs ≥6h of history) */
+function marketDelta(hist,now=Date.now()){
+  if(!hist||hist.length<2)return null;const cur=hist.at(-1)[1];const target=now-864e5;
+  let ref=null;for(const h of hist){if(h[0]<=target)ref=h;}if(!ref){const o=hist[0];if(now-o[0]<6*36e5)return null;ref=o}
+  return{d:cur-ref[1],from:ref[1],to:cur,hours:Math.round((now-ref[0])/36e5)};
+}
+/* market direction: does YES mean more danger (+1), less (-1) or unclear (0)? */
+const DEESC=/ceasefire|cease-fire|truce|peace|deal|agreement|negotiat|talks|end (the|of)|ends?\b|withdraw|release|normaliz|recogni[sz]e|reopen/i;
+const ESC=/invade|invasion|attack|strike|war\b|blockade|clash|military action|nuclear|missile|bomb|conflict|escalat|declare|mobiliz|captur|seize|annex|enter|troops/i;
+function polarity(q){return DEESC.test(q)?-1:ESC.test(q)?1:0}
+/* ── Alarm rules (shared logic is mirrored in worker.js) ── */
+const SENS={low:1.4,normal:1,high:.75};
+function evaluateAlarms(ctx,sens='normal'){
+  const k=SENS[sens]||1,out=[];
+  const g=ctx.global;
+  if(g&&g.ratio!=null&&g.z!=null){
+    if(g.ratio>=3*k&&g.z>=4*k)out.push({key:'global-surge',level:'prep',region:null,title:'Global surge in severe-escalation reporting',why:`Coverage of war declarations, blockades, mobilization or nuclear alerts is ${g.ratio.toFixed(1)}× its 7-day baseline (z ${g.z.toFixed(1)}).`});
+    else if(g.ratio>=2*k&&g.z>=3*k)out.push({key:'global-surge',level:'watch',region:null,title:'Rising severe-escalation reporting',why:`Escalation-keyword coverage is ${g.ratio.toFixed(1)}× baseline (z ${g.z.toFixed(1)}).`});
+  }
+  for(const d of ctx.regions){
+    const n=ctx.news[d.id],s=n?.spike,big=d.type!=='human';
+    if(s&&s.ratio!=null&&s.z!=null){
+      if(big&&s.ratio>=3*k&&s.z>=4*k)out.push({key:'news-'+d.id,level:'prep',region:d.id,title:`${d.name}: sudden news surge`,why:`Today's conflict coverage is ${s.ratio.toFixed(1)}× its 30-day average (z ${s.z.toFixed(1)}).`});
+      else if(s.ratio>=2.2*k&&s.z>=3*k)out.push({key:'news-'+d.id,level:'watch',region:d.id,title:`${d.name}: news spike`,why:`Today's conflict coverage is ${s.ratio.toFixed(1)}× its 30-day average (z ${s.z.toFixed(1)}).`});
+    }
+    for(const mk of ctx.markets[d.id]||[]){
+      const dl=mk.delta;if(!dl)continue;const pol=polarity(mk.q),risk=dl.d*(pol||1),pp=Math.round(dl.d*100),sg=pp>0?'+':'';
+      const msg=`“${mk.q}” moved ${sg}${pp} pts to ${Math.round(dl.to*100)}% in ${dl.hours}h${pol<0?' (a de-escalation market falling)':''}.`,key='mkt-'+d.id+'-'+mk.q.slice(0,40);
+      if(pol>0&&big&&mk.vol>=50000&&(dl.d>=.2*k||(dl.from<.5&&dl.to>=.5&&dl.d>=.1*k)))out.push({key,level:'prep',region:d.id,title:`${d.name}: crowd odds of escalation jumped`,why:msg,url:mk.url});
+      else if(pol!==0&&risk>=.1*k)out.push({key,level:'watch',region:d.id,title:`${d.name}: odds shifting toward escalation`,why:msg,url:mk.url});
+      else if(pol===0&&Math.abs(dl.d)>=.15*k)out.push({key,level:'watch',region:d.id,title:`${d.name}: odds moving sharply`,why:msg,url:mk.url});
+    }
+    const fc=ctx.views[d.id];
+    if(fc&&fc.revision!=null&&fc.revision>=1.5*k&&fc.next3>=100)out.push({key:'fc-'+d.id+'-'+ctx.run,level:'watch',region:d.id,title:`${d.name}: forecast revised up`,why:`The newest VIEWS run raises expected battle deaths for the next 3 months by ${Math.round((fc.revision-1)*100)}%.`});
+  }
+  return out;
+}
+/*LIVE-PURE-END*/
+
+/* ───────────────────────── Scene (unchanged look) ───────────────────────── */
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x060c17);const camera=new THREE.PerspectiveCamera(44,innerWidth/innerHeight,.1,100);camera.position.set(0,1.1,8.7);const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:"high-performance"});renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));document.querySelector('#scene').appendChild(renderer.domElement);const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.enableZoom=true;controls.rotateSpeed=.65;controls.minDistance=3.5;controls.maxDistance=13;controls.enablePan=false;const globe=new THREE.Group();scene.add(globe);scene.add(new THREE.AmbientLight(0x8caed6,1.2));const light=new THREE.DirectionalLight(0xffffff,2.4);light.position.set(5,3,5);scene.add(light);const R=2.4;const earth=new THREE.Mesh(new THREE.SphereGeometry(R,96,64),new THREE.MeshPhongMaterial({color:0x16446b,shininess:14,specular:0x244c6c}));globe.add(earth);globe.add(new THREE.Mesh(new THREE.SphereGeometry(R*1.035,64,48),new THREE.MeshBasicMaterial({color:0x267eae,transparent:true,opacity:.08,side:THREE.BackSide})));
+new THREE.TextureLoader().load('https://cdn.jsdelivr.net/npm/three-globe@2.33.1/example/img/earth-blue-marble.jpg',t=>{t.colorSpace=THREE.SRGBColorSpace;earth.material.map=t;earth.material.color.set(0xffffff);earth.material.needsUpdate=true},undefined,()=>{});
+function vec(lat,lon,r=R){let a=(90-lat)*Math.PI/180,b=(lon+180)*Math.PI/180;return new THREE.Vector3(-r*Math.sin(a)*Math.cos(b),r*Math.cos(a),r*Math.sin(a)*Math.sin(b))}
+const colors={war:0xff526b,flash:0xffb34f,human:0xbd83ff};const hex=t=>'#'+colors[t].toString(16).padStart(6,'0');
+const markerGroup=new THREE.Group();globe.add(markerGroup);const targets=[];const markers=[];
+data.forEach(d=>{const color=colors[d.type],pos=vec(d.lat,d.lon,R*1.014);const glow=new THREE.Mesh(new THREE.SphereGeometry(.18*d.scale,20,16),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.17,depthWrite:false}));glow.position.copy(pos);markerGroup.add(glow);const ring=new THREE.Mesh(new THREE.TorusGeometry(.105*d.scale,.012,8,48),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.85}));ring.position.copy(pos);ring.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),pos.clone().normalize());markerGroup.add(ring);
+  const alarmRing=new THREE.Mesh(new THREE.TorusGeometry(.16*d.scale,.016,8,64),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0}));alarmRing.position.copy(pos);alarmRing.quaternion.copy(ring.quaternion);markerGroup.add(alarmRing);
+  const core=new THREE.Mesh(new THREE.SphereGeometry(.035,12,12),new THREE.MeshBasicMaterial({color:0xffffff}));core.position.copy(pos);markerGroup.add(core);targets.push({object:glow,d});markers.push({d,glow,ring,core,alarmRing,k:1,cur:1,freq:1.8,alarm:null})});
+const arcs=[['ukraine','iran'],['ukraine','korea'],['iran','gaza'],['iran','yemen'],['iran','lebanon'],['taiwan','southchina'],['taiwan','korea'],['taiwan','ukraine'],['sudan','ethiopia'],['sudan','sahel'],['congo','sudan'],['kashmir','taiwan'],['myanmar','taiwan'],['yemen','somalia'],['haiti','sahel']];const arcMeshes=[];arcs.forEach(([a,b])=>{let x=data.find(d=>d.id===a),y=data.find(d=>d.id===b),v=vec(x.lat,x.lon,R*1.03),w=vec(y.lat,y.lon,R*1.03),points=[];for(let i=0;i<=60;i++){let t=i/60;points.push(v.clone().lerp(w,t).normalize().multiplyScalar(R*(1.04+Math.sin(Math.PI*t)*.19)))}let line=new THREE.Line(new THREE.BufferGeometry().setFromPoints(points),new THREE.LineBasicMaterial({color:0x60dbe9,transparent:true,opacity:.32}));globe.add(line);arcMeshes.push({line,a,b})});
+const stars=[];for(let i=0;i<1300;i++){let v=new THREE.Vector3(Math.random()-.5,Math.random()-.5,Math.random()-.5).normalize().multiplyScalar(25+Math.random()*25);stars.push(v.x,v.y,v.z)}let starGeo=new THREE.BufferGeometry();starGeo.setAttribute('position',new THREE.Float32BufferAttribute(stars,3));scene.add(new THREE.Points(starGeo,new THREE.PointsMaterial({color:0x8ea9d5,size:.045,transparent:true,opacity:.65})));
+
+/* ───────────────────────── Live data layer ───────────────────────── */
+const $=s=>document.querySelector(s);
+const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch{return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}},del(k){try{localStorage.removeItem(k)}catch{}}};
+const qs=new URLSearchParams(location.search);
+if(qs.get('proxy'))store.set('gfl:proxy',qs.get('proxy'));
+/* served by the Worker itself → same-origin proxy, no setup */
+const SELF_HOSTED=!!window.GFL_SELF_HOSTED;
+let PROXY=String(store.get('gfl:proxy')||(SELF_HOSTED?location.origin:'')).trim().replace(/\/+$/,'');
+const settings=Object.assign({armed:false,sens:'normal',sound:true},store.get('gfl:settings')||{});
+const saveSettings=()=>store.set('gfl:settings',settings);
+const MIN=6e4,TTL={news:15*MIN,heads:15*MIN,markets:3*MIN,global:10*MIN,runs:6*60*MIN};
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const live={views:{status:'idle',by:{}},news:{status:'idle',by:{},done:0},markets:{status:'idle',by:{}},global:null,heads:{},alarms:store.get('gfl:alarmlog')||[]};
+
+async function getJSON(url,{timeout=25000}={}){
+  const target=PROXY?`${PROXY}/fetch?url=${encodeURIComponent(url)}`:url;
+  const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),timeout);
+  try{const r=await fetch(target,{signal:ctl.signal});const txt=await r.text();if(!r.ok)throw new Error('HTTP '+r.status);
+    try{return JSON.parse(txt)}catch{throw new Error(txt.trim().slice(0,90)||'Empty response')}}
+  catch(e){if(e instanceof TypeError&&!PROXY)e.blocked=true;throw e}finally{clearTimeout(t)}
+}
+/* cache-first with stale fallback */
+async function cached(key,ttl,fetcher){
+  const c=store.get('gfl:c:'+key);
+  if(c&&Date.now()-c.t<ttl)return{data:c.d,t:c.t,cached:true};
+  try{const d=await fetcher();store.set('gfl:c:'+key,{t:Date.now(),d});return{data:d,t:Date.now()}}
+  catch(e){if(c)return{data:c.d,t:c.t,stale:true,err:e};throw e}
+}
+/* GDELT asks for ≤1 request per 5 s; one queue, priority jobs jump ahead */
+const gq=[];let gBusy=false,gLast=0;
+function gdelt(params,priority=false){return new Promise((res,rej)=>{const job={params,res,rej};priority?gq.unshift(job):gq.push(job);pumpG()})}
+async function pumpG(){if(gBusy||!gq.length)return;gBusy=true;await sleep(Math.max(0,gLast+5600-Date.now()));const job=gq.shift();gLast=Date.now();
+  try{job.res(await getJSON('https://api.gdeltproject.org/api/v2/doc/doc?'+new URLSearchParams({...job.params,format:'json'})))}catch(e){job.rej(e)}gBusy=false;pumpG()}
+
+function setStatus(src,status,t,err){Object.assign(live[src],{status,updated:t||live[src].updated,err:err?(err.blocked?'Blocked by browser (CORS). Add a proxy in ⚙ Data.':String(err.message||err)):null});renderChips()}
+
+async function loadViews(){
+  setStatus('views','loading');
+  try{
+    const runs=await cached('views-runs',TTL.runs,()=>getJSON('https://api.viewsforecasting.org/'));
+    const {latest,prev,label}=pickRuns(runs.data.runs);if(!latest)throw new Error('No forecast run listed');
+    const isos=[...new Set(data.flatMap(d=>d.iso))];
+    const rows=await viewsRows(latest,isos);const prows=prev?await viewsRows(prev,isos).catch(()=>null):null;
+    for(const d of data)live.views.by[d.id]=summarizeViews(rows.rows,d.iso,prows?.rows);
+    Object.assign(live.views,{run:latest,prev,label});
+    for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k?.startsWith('gfl:c:vr-')&&!k.endsWith(latest)&&!(prev&&k.endsWith(prev)))store.del(k)}
+    setStatus('views',runs.stale?'cached':'live',rows.t);
+  }catch(e){setStatus('views','error',null,e)}
+  onLive();
+}
+async function viewsRows(run,isos){ /* runs are immutable → cache forever */
+  const r=await cached('vr-'+run,Infinity,async()=>{
+    let url=`https://api.viewsforecasting.org/${run}/cm/sb?${isos.map(i=>'iso='+i).join('&')}&pagesize=1000`;const rows=[];
+    for(let i=0;i<12&&url;i++){const j=await getJSON(url);for(const r of j.data||[])rows.push({isoab:r.isoab,name:r.name,month_id:r.month_id,year:r.year,month:r.month,main_mean:r.main_mean,main_dich:r.main_dich});url=j.next_page?String(j.next_page).replace(/^http:/,'https:'):''}
+    if(!rows.length)throw new Error('Empty forecast');return rows});
+  return{rows:r.data,t:r.t};
+}
+let newsRunning=false;
+async function loadNews(){
+  if(newsRunning)return;newsRunning=true;live.news.done=0;setStatus('news','loading');let ok=0,stale=0,lastErr=null;
+  /* global trigger query first – it drives the alarm */
+  try{const g=await cached('global',TTL.global,()=>gdelt({query:GLOBAL_Q,mode:'timelinevol',timespan:'7d'}));live.global=spikeStats(g.data)}catch(e){lastErr=e}
+  for(const d of data){
+    try{const r=await cached('news-'+d.id,TTL.news,()=>gdelt({query:d.q,mode:'timelinevol',timespan:'90d'}));live.news.by[d.id]=summarizeNews(r.data);ok++;if(r.stale)stale++}
+    catch(e){lastErr=e}
+    live.news.done++;renderChips();onLive(true);
+  }
+  setStatus('news',ok?(stale?'cached':'live'):'error',Date.now(),ok?null:lastErr);newsRunning=false;onLive();
+}
+async function loadMarkets(){
+  setStatus('markets','loading');let ok=0,lastErr=null;const hist=store.get('gfl:mhist')||{},now=Date.now();
+  for(const d of data){
+    try{
+      const r=await cached('pm-'+d.id,TTL.markets-5000,()=>getJSON('https://gamma-api.polymarket.com/public-search?'+new URLSearchParams({q:d.pm,events_status:'active'})));
+      const mk=parseMarkets(r.data,d.pmRe);
+      for(const m of mk){const h=(hist[m.q]||=[]);if(!h.length||now-h.at(-1)[0]>2*MIN)h.push([now,m.p]);m.delta=marketDelta(h,now)}
+      live.markets.by[d.id]=mk;ok++;
+    }catch(e){lastErr=e;if(e.blocked)break}
+    await sleep(150);
+  }
+  for(const q in hist){hist[q]=hist[q].filter(h=>now-h[0]<50*36e5);if(!hist[q].length)delete hist[q]}
+  store.set('gfl:mhist',hist);
+  setStatus('markets',ok?'live':'error',Date.now(),ok?null:lastErr);onLive();
+}
+async function loadHeadlines(d){
+  if(live.heads[d.id]?.loading)return;live.heads[d.id]={...(live.heads[d.id]||{}),loading:true};
+  try{const r=await cached('heads-'+d.id,TTL.heads,()=>gdelt({query:d.q+' sourcelang:english',mode:'artlist',maxrecords:'8',sort:'datedesc',timespan:'3d'},true));
+    live.heads[d.id]={items:(r.data.articles||[]).slice(0,6),t:r.t}}
+  catch(e){live.heads[d.id]={error:e.blocked?'Blocked by browser (CORS) — add a proxy in ⚙ Data.':'Headlines unavailable right now.'}}
+  if(selected?.id===d.id)renderDetail(d);
+}
+/* server-side alarms from the Worker cron (if a proxy is configured) */
+async function loadServerAlarms(){
+  if(!PROXY)return;try{const j=await getJSON(PROXY.replace(/\/fetch$/,'')+'/alarms');for(const a of j.alarms||[])raiseAlarm({...a,server:true},true)}catch{}
+}
+
+/* ───────────────────────── Alarm engine ───────────────────────── */
+let audioCtx=null,activeAlarm=null;
+function unlockAudio(){try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();audioCtx.resume()}catch{}}
+function tone(f0,f1,dur,at,gain=.18){const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='sawtooth';o.frequency.setValueAtTime(f0,at);o.frequency.linearRampToValueAtTime(f1,at+dur);g.gain.setValueAtTime(0,at);g.gain.linearRampToValueAtTime(gain,at+.03);g.gain.linearRampToValueAtTime(0,at+dur);o.connect(g).connect(audioCtx.destination);o.start(at);o.stop(at+dur+.05)}
+function playSound(level){if(!settings.sound||!audioCtx)return;const t=audioCtx.currentTime+.05;
+  if(level==='prep'){for(let i=0;i<6;i++){tone(620,980,.55,t+i*1.1);tone(980,620,.55,t+i*1.1+.55)}}else{tone(880,880,.18,t,.12);tone(1320,1320,.25,t+.22,.12)}}
+function notify(a){
+  try{navigator.vibrate?.(a.level==='prep'?[400,200,400,200,800]:[200])}catch{}
+  if(!('Notification'in window)||Notification.permission!=='granted')return;
+  try{new Notification((a.level==='prep'?'PREP ALARM: ':'Watch: ')+a.title,{body:a.why,tag:a.key,requireInteraction:a.level==='prep'})}catch{}
+}
+const COOLDOWN=12*60*MIN;
+function raiseAlarm(a,quiet=false){
+  const fired=store.get('gfl:fired')||{};const last=fired[a.key];
+  if(last&&Date.now()-last.t<COOLDOWN&&!(a.level==='prep'&&last.level==='watch'))return false;
+  fired[a.key]={t:Date.now(),level:a.level};store.set('gfl:fired',fired);
+  a.t=a.t||Date.now();live.alarms.unshift(a);live.alarms=live.alarms.slice(0,40);store.set('gfl:alarmlog',live.alarms);
+  const m=markers.find(x=>x.d.id===a.region);if(m)m.alarm=a.level;
+  if(!settings.armed&&!a.test){renderList();return true}
+  if(!activeAlarm||a.level==='prep'||activeAlarm.level!=='prep'){activeAlarm=a;showAlarm(a)}
+  if(!quiet||a.level==='prep'){playSound(a.level);notify(a)}
+  renderList();return true;
+}
+function checkAlarms(){
+  const ctx={global:live.global,regions:data,news:live.news.by,markets:live.markets.by,views:live.views.by,run:live.views.run};
+  for(const a of evaluateAlarms(ctx,settings.sens))raiseAlarm(a);
+  /* light up regions that currently meet a rule even if already acknowledged */
+  const now=evaluateAlarms(ctx,settings.sens);markers.forEach(m=>{const hit=now.filter(a=>a.region===m.d.id);m.alarm=hit.some(a=>a.level==='prep')?'prep':hit.length?'watch':null});
+}
+const PREP_STEPS=[
+ ['Verify first','Check official channels: the <a href="https://www.alert.swiss" target="_blank" rel="noopener">Alertswiss</a> app/site, radio and your local authorities. This alarm is a news/market signal, not an official warning.'],
+ ['Emergency supplies','The Swiss federal supply office (BWL) recommends 9 litres of water per person and food for about a week, plus regular medicines, hygiene items, some cash and pet food. Use the <a href="https://www.notvorratsrechner.bwl.admin.ch" target="_blank" rel="noopener">supply calculator</a>.'],
+ ['Power & comms','Charge your phones and power banks. Keep a battery radio and torch with spare batteries, and keep key contacts and maps available offline.'],
+ ['Family plan','Agree a meeting point and contact order, and check pickup arrangements for the kids’ schools.'],
+ ['Documents','Check that passports and IDs are valid, and keep copies (paper and encrypted digital) with insurance details.'],
+ ['Travel','If you or family are abroad or about to travel, check the FDFA travel advice and register with <a href="https://www.eda.admin.ch/eda/en/fdfa/living-abroad/travel-advice/travel-admin.html" target="_blank" rel="noopener">Travel Admin</a>.'],
+ ['Stay calm, re-check','No panic buying. Re-check the signals in a few hours, because many news spikes fade within a day.']];
+function showAlarm(a){
+  const d=data.find(x=>x.id===a.region);const el=$('#alarm');el.className=a.level;el.hidden=false;
+  const related=live.alarms.filter(x=>x!==a&&Date.now()-x.t<6*36e5).slice(0,3);
+  el.innerHTML=`<div class="lvl">${a.level==='prep'?'■ PREP ALARM':'▲ WATCH'}${a.test?' · TEST':''}${a.server?' · from server':''} · ${new Date(a.t).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</div>
+  <h2>${esc(a.title)}</h2><div>${esc(a.why)}${a.url?` <a href="${safeUrl(a.url)}" target="_blank" rel="noopener">Market ↗</a>`:''}</div>
+  ${related.length?`<ul>${related.map(r=>`<li>${esc(r.title)}: ${esc(r.why)}</li>`).join('')}</ul>`:''}
+  ${a.level==='prep'?`<ol>${PREP_STEPS.map(([h,t])=>`<li><b>${h}:</b> ${t}</li>`).join('')}</ol>`:''}
+  <div class="row"><button class="btn primary" id="ackBtn">Acknowledge</button>${d?`<button class="btn" id="goBtn">Open ${esc(d.name)}</button>`:''}${a.level!=='prep'?'<button class="btn" id="stepsBtn">Prep checklist</button>':''}</div>
+  <div class="fine">Rule-based signal from GDELT news volume, Polymarket odds and VIEWS forecasts, so false alarms are possible. Thresholds are set under 🔔 Prep alarm.</div>`;
+  $('#ackBtn').onclick=()=>{el.hidden=true;activeAlarm=null};
+  if(d)$('#goBtn').onclick=()=>{el.hidden=true;activeAlarm=null;select(d)};
+  const sb=$('#stepsBtn');if(sb)sb.onclick=()=>{sb.remove();el.querySelector('.fine').insertAdjacentHTML('beforebegin',`<ol>${PREP_STEPS.map(([h,t])=>`<li><b>${h}:</b> ${t}</li>`).join('')}</ol>`)};
+}
+
+/* ───────────────────────── UI rendering ───────────────────────── */
+const list=$('#regions'),detail=$('#detail');let selected=null,filter='all',sortMode='editorial',spin=innerWidth>850;
+const fmt=n=>n==null||!Number.isFinite(n)?'–':n<1?'<1':n<10?n.toFixed(1):Math.round(n).toLocaleString('en-US');
+const pct=x=>x==null?'–':(x<.01?'<1':x>.99?'>99':Math.round(x*100))+'%';
+const arrow=r=>r==null?'':r>=1.15?'<span class="up">▲</span>':r<=.87?'<span class="down">▼</span>':'<span class="flat">▬</span>';
+const signed=r=>r==null?'–':(r>=1?'+':'')+Math.round((r-1)*100)+'%';
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function spark(vals,color,{base}={}){if(!vals?.length)return'';const w=300,h=46,mx=Math.max(...vals,base||0)||1,n=vals.length;
+  const pts=vals.map((v,i)=>`${(i/(n-1||1)*w).toFixed(1)},${(h-3-(v/mx)*(h-8)).toFixed(1)}`);
+  const bl=base!=null?`<line x1="0" x2="${w}" y1="${(h-3-(base/mx)*(h-8)).toFixed(1)}" y2="${(h-3-(base/mx)*(h-8)).toFixed(1)}" stroke="#8197ae" stroke-dasharray="3 4" stroke-width="1"/>`:'';
+  return`<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">${bl}<path d="M0,${h} L${pts.join(' L')} L${w},${h} Z" fill="${color}22"/><polyline points="${pts.join(' ')}" fill="none" stroke="${color}" stroke-width="1.8" vector-effect="non-scaling-stroke"/></svg>`}
+function ago(t){if(!t)return'';const s=(Date.now()-t)/1e3;return s<90?'just now':s<5400?Math.round(s/60)+' min ago':s<172800?Math.round(s/3600)+' h ago':Math.round(s/86400)+' d ago'}
+function gdeltDate(s){const m=/^(\d{4})(\d\d)(\d\d)T(\d\d)(\d\d)/.exec(s||'');return m?Date.UTC(+m[1],m[2]-1,+m[3],+m[4],+m[5]):null}
+
+function renderChips(){
+  const c=(k,label,extra)=>{const s=live[k];const txt=s.status==='loading'?(k==='news'?`loading ${s.done}/${data.length}`:'loading…'):s.status==='error'?'unavailable':s.updated?ago(s.updated):'';return`<span class="chip ${s.status}" title="${esc(s.err||'')}"><i></i>${label}${extra||''} · ${txt}</span>`};
+  $('#chips').innerHTML=c('views','VIEWS forecast',live.views.label?` (run ${live.views.label})`:'')+c('news','GDELT news')+c('markets','Polymarket')+(PROXY?'<span class="chip cached"><i></i>via proxy</span>':'');
+  const states=['views','news','markets'].map(k=>live[k].status),pill=$('#livePill');
+  const anyLive=states.includes('live'),allErr=states.every(s=>s==='error');
+  pill.className='pill '+(anyLive?'live':allErr?'warn':'');
+  pill.querySelector('span').textContent=anyLive?`LIVE DATA · ${new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})} · AUTO-REFRESH${settings.armed?' · ALARM ARMED':''}`:allErr?'LIVE SOURCES UNREACHABLE · SEE ⚙ DATA':states.includes('cached')?'SHOWING CACHED DATA':'CONNECTING TO LIVE SOURCES…';
+}
+function ordered(){const arr=data.filter(d=>filter==='all'||d.type===filter);
+  if(sortMode==='forecast')arr.sort((a,b)=>(live.views.by[b.id]?.next3??-1)-(live.views.by[a.id]?.next3??-1));
+  if(sortMode==='momentum')arr.sort((a,b)=>(live.news.by[b.id]?.momentum??-1)-(live.news.by[a.id]?.momentum??-1));return arr}
+function renderList(){
+  const sc=list.scrollLeft,st=list.scrollTop;list.innerHTML='';
+  ordered().forEach(d=>{const fc=live.views.by[d.id],nw=live.news.by[d.id],m=markers.find(x=>x.d.id===d.id);
+    const b=document.createElement('button');b.className='region'+(selected?.id===d.id?' active':'');
+    b.innerHTML=`<span class="dot" style="background:${hex(d.type)};color:${hex(d.type)}"></span><span class="txt"><strong>${d.name}${m?.alarm?`<span class="alarmTag ${m.alarm}">${m.alarm.toUpperCase()}</span>`:''}</strong><small>${d.subtitle}</small></span><span class="metric">${fc?`<b>${fmt(fc.next3)}</b>deaths/mo`:'<b>–</b>no model'}<br>${nw?.momentum!=null?`${arrow(nw.momentum)} news ${signed(nw.momentum)}`:''}</span>`;
+    b.onclick=()=>select(d);list.appendChild(b)});
+  list.scrollLeft=sc;list.scrollTop=st;
+}
+function renderDetail(d){
+  const fc=live.views.by[d.id],nw=live.news.by[d.id],mk=live.markets.by[d.id],hd=live.heads[d.id],ol=outlook(nw,fc),col=hex(d.type);
+  const lowModel=fc&&fc.next3<5&&d.type==='flash';
+  const fcCard=fc?`<div class="card"><div class="k"><span>Conflict forecast · VIEWS</span><span>run ${esc(live.views.label||'')}</span></div>
+     <div class="big">≈ ${fmt(fc.next3)} <span>battle deaths / month, next 3 months</span></div>
+     <div>Chance of ≥25 battle deaths in ${MONTHS[fc.start.m-1]} ${fc.start.y}: <b>${pct(fc.pNext)}</b></div>
+     ${fc.revision!=null?`<div>Revision vs previous run: ${arrow(fc.revision)} <b>${signed(fc.revision)}</b></div>`:''}
+     ${spark(fc.series.map(x=>x.mean),col)}<small>12-month forecast path, ${MONTHS[fc.series[0].m-1]} ${fc.series[0].y} → ${MONTHS[fc.series.at(-1).m-1]} ${fc.series.at(-1).y}. Covers state-based violence at country level (${esc(fc.names.join(', '))}), not just this hotspot.${lowModel?' <b>Caveat:</b> the model extrapolates from recent violence, so it underrates sudden interstate escalation. Here, news momentum and crowd odds are the leading signals.':''}</small></div>`
+    :`<div class="card"><div class="k"><span>Conflict forecast · VIEWS</span></div>${d.iso.length?(live.views.status==='error'?`<span class="muted">${esc(live.views.err)}</span>`:'<span class="muted">Loading forecast…</span>'):'<span class="muted">No country-month fatality model fits this maritime/interstate flashpoint, so use news momentum and crowd odds instead.</span>'}</div>`;
+  const nwCard=nw?`<div class="card"><div class="k"><span>News intensity · GDELT</span><span>90 days</span></div>
+     <div class="big">${arrow(nw.momentum)} ${signed(nw.momentum)} <span>7-day coverage vs prior 30 days</span></div>
+     ${nw.spike?.ratio!=null?`<div>Today: <b>${nw.spike.ratio.toFixed(1)}×</b> the 30-day average (z ${nw.spike.z?.toFixed(1)??'–'})</div>`:''}
+     ${spark(nw.series,'#6ee5ef',{base:nw.base})}<small>Share of all global coverage matching this region’s conflict query. The dashed line marks the 30-day baseline. It measures attention, not casualties.</small></div>`
+    :`<div class="card"><div class="k"><span>News intensity · GDELT</span></div><span class="muted">${live.news.status==='error'?esc(live.news.err):'Queued, because GDELT allows one request every 5 s…'}</span></div>`;
+  const mkCard=`<div class="card"><div class="k"><span>Crowd forecasts · Polymarket</span><span>${live.markets.updated?ago(live.markets.updated):''}</span></div>${
+     mk?.length?mk.map(m=>`<div class="mk"><a href="${safeUrl(m.url)}" target="_blank" rel="noopener">${esc(m.q)}<em>$${fmt(m.vol)} traded${m.end?' · resolves '+new Date(m.end).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):''}${m.delta?` · ${m.delta.d>=0?'+':''}${Math.round(m.delta.d*100)} pts / ${m.delta.hours}h`:''}</em></a><b>${pct(m.p)}</b></div>`).join('')
+     :`<span class="muted">${live.markets.status==='error'?esc(live.markets.err):mk?'No active, liquid market for this region right now.':'Loading…'}</span>`}<small>These are market-implied probabilities from real-money traders. Read each question’s exact resolution rules.</small></div>`;
+  const hdCard=`<div class="card"><div class="k"><span>Latest headlines · GDELT</span><span>${hd?.t?ago(hd.t):''}</span></div>${
+     hd?.items?(hd.items.length?hd.items.map(a=>`<a class="hl" href="${safeUrl(a.url)}" target="_blank" rel="noopener">${esc(a.title)}<span>${esc(a.domain)} · ${ago(gdeltDate(a.seendate))}</span></a>`).join(''):'<span class="muted">No matching English-language articles in the last 3 days.</span>'):`<span class="muted">${hd?.error?esc(hd.error):'Loading…'}</span>`}</div>`;
+  const regionAlarms=live.alarms.filter(a=>a.region===d.id&&Date.now()-a.t<48*36e5);
+  detail.innerHTML=`<div class="eyebrow">Live regional briefing</div><h2>${d.name}</h2><span class="tag">${d.subtitle}</span>
+   ${regionAlarms.length?`<div class="outlook up" style="margin-top:12px">${regionAlarms[0].level==='prep'?'■ Prep alarm':'▲ Watch'}: ${esc(regionAlarms[0].title)}<small>${esc(regionAlarms[0].why)} · ${ago(regionAlarms[0].t)}</small></div>`:''}
+   <h3>Outlook</h3>${ol?`<div class="outlook ${ol.cls}">${ol.label}<small>News momentum ${signed(ol.m)} · forecast revision ${signed(ol.r)}. “Rising” means momentum ≥ +30% or revision ≥ +15%, with neither pointing down.</small></div>`:'<div class="card muted">Waiting for live signals…</div>'}
+   <h3>Live signals</h3>${fcCard}${nwCard}${mkCard}${hdCard}
+   <h3>Context</h3><p>${d.context}</p><h3>What is at risk</h3><p>${d.risk}</p><h3>Global connections</h3><p>${d.links}</p><h3>Signals to monitor</h3><p>${d.watch}</p>
+   <h3>Interpretation</h3><p>The forecast and odds are probabilistic, not certainties. Humanitarian severity and military escalation are different dimensions.</p>`;
+}
+function select(d){selected=d;setSpin(false);renderDetail(d);renderList();loadHeadlines(d);
+  let p=vec(d.lat,d.lon,1).normalize();globe.updateMatrixWorld(true);let world=globe.localToWorld(p.clone());camera.position.copy(world.normalize().multiplyScalar(6.4));camera.lookAt(0,0,0);controls.target.set(0,0,0);controls.update();
+  if(innerWidth<=850)detail.scrollIntoView({behavior:'smooth',block:'start'})}
+function applyMarkers(){markers.forEach(m=>{const fc=live.views.by[m.d.id],nw=live.news.by[m.d.id];
+  const s=fc?clamp(.55+.24*Math.log10(1+fc.next3),.55,1.55):m.d.scale;m.k=s/m.d.scale;m.freq=1.8*clamp(nw?.momentum??1,.6,2.6)})}
+let renderPending=false;
+function onLive(light){applyMarkers();if(!light)checkAlarms();renderChips();if(renderPending)return;renderPending=true;requestAnimationFrame(()=>{renderPending=false;renderList();if(selected)renderDetail(selected)})}
+
+/* ───────────────────────── Settings & alarm sheets ───────────────────────── */
+function openSheet(kind){const el=$('#sheet');if(!el.hidden&&el.dataset.kind===kind){el.hidden=true;return}el.dataset.kind=kind;el.hidden=false;kind==='data'?renderDataSheet():renderAlarmSheet()}
+function renderDataSheet(){const el=$('#sheet');el.innerHTML=`<button class="btn" style="float:right" onclick="this.closest('.sheet').hidden=true">✕</button><h2>Live data</h2>
+ ${SELF_HOSTED?'<p>This page is served by your Worker, so all sources go through it: cached at the edge and free of CORS problems. The Worker’s cron also runs the prep alarm while the page is closed.</p>':'<p>Sources are called straight from your browser. GDELT allows this. If VIEWS or Polymarket show “Blocked by browser (CORS)”, deploy the included <b>worker.js</b> to Cloudflare and paste its URL here. It also caches responses and runs the prep alarm while this page is closed.</p>'}
+ <h3>Proxy (Cloudflare Worker)</h3><input type="url" id="proxyIn" placeholder="https://fault-lines.yourname.workers.dev" value="${esc(PROXY)}">
+ <div class="row"><button class="btn" id="proxySave">Save &amp; reload data</button><button class="btn" id="proxyClear">Use direct calls</button></div>
+ <h3>Refresh</h3><div>News every 15 min · markets every 3 min · forecast every 6 h (VIEWS publishes monthly).</div>
+ <div class="row"><button class="btn" id="refreshNow">Refresh everything now</button><button class="btn" id="clearCache">Clear cache</button></div>
+ ${['views','news','markets'].map(k=>live[k].err?`<p class="muted">${k}: ${esc(live[k].err)}</p>`:'').join('')}`;
+ $('#proxySave').onclick=()=>{PROXY=$('#proxyIn').value.trim().replace(/\/+$/,'');store.set('gfl:proxy',PROXY);refreshAll(true);renderDataSheet()};
+ $('#proxyClear').onclick=()=>{PROXY=SELF_HOSTED?location.origin:'';store.del('gfl:proxy');refreshAll(true);renderDataSheet()};
+ $('#refreshNow').onclick=()=>refreshAll(true);
+ $('#clearCache').onclick=()=>{for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k?.startsWith('gfl:c:'))store.del(k)}refreshAll(true)};
+}
+function renderAlarmSheet(){const el=$('#sheet');const perm='Notification'in window?Notification.permission:'unsupported';
+ el.innerHTML=`<button class="btn" style="float:right" onclick="this.closest('.sheet').hidden=true">✕</button><h2>🔔 Prep alarm</h2><p>The alarm triggers on real signals: sudden news surges, sharp moves in crowd odds and big forecast revisions. A <b>PREP</b> alarm sounds a siren, sends a notification and shows a checklist. A <b>WATCH</b> alarm chimes once. Each rule re-fires at most every 12 h.</p>
+ <div class="row"><button class="btn ${settings.armed?'':'primary'}" id="armBtn">${settings.armed?'Disarm':'Arm alarm (enables sound + notifications)'}</button><button class="btn" id="testBtn">Test alarm</button></div>
+ <p class="muted">Notifications: ${perm}. The browser only checks while this page is open. To get alerts with the page closed, set <b>NTFY_TOPIC</b> on the Worker and install the free ntfy app.</p>
+ <h3>Sensitivity</h3><select id="sensSel"><option value="low">Low: fewer, stronger alarms</option><option value="normal">Normal</option><option value="high">High: earlier, noisier</option></select>
+ <label style="display:flex;gap:8px;margin-top:8px"><input type="checkbox" id="soundChk" ${settings.sound?'checked':''}> Play sound</label>
+ <h3>Rules (normal sensitivity)</h3><ul style="padding-left:16px;margin:0">
+ <li><b>PREP</b>: global escalation-keyword coverage ≥ 3× its 7-day baseline and z ≥ 4.</li>
+ <li><b>PREP</b>: a war or flashpoint region at ≥ 3× its 30-day news average and z ≥ 4.</li>
+ <li><b>PREP</b>: a liquid (≥ $50k) <i>escalation</i> market (invasion, strike, blockade…) on a war or flashpoint region rises 20+ pts in 24 h, or crosses 50%. A falling ceasefire or peace market counts as a WATCH.</li>
+ <li><b>WATCH</b>: smaller versions of the above, or a VIEWS forecast revised up ≥ 50%.</li></ul>
+ <h3>Recent alarms</h3><div class="log">${live.alarms.length?live.alarms.map(a=>`<div><b style="color:${a.level==='prep'?'#ff8a9a':'#ffc879'}">${a.level.toUpperCase()}</b> ${esc(a.title)}${a.test?' (test)':''}<br><span class="muted">${new Date(a.t).toLocaleString()} · ${esc(a.why)}</span></div>`).join(''):'<span class="muted">None yet.</span>'}</div>`;
+ $('#sensSel').value=settings.sens;$('#sensSel').onchange=e=>{settings.sens=e.target.value;saveSettings();checkAlarms()};
+ $('#soundChk').onchange=e=>{settings.sound=e.target.checked;saveSettings()};
+ $('#armBtn').onclick=async()=>{unlockAudio();settings.armed=!settings.armed;saveSettings();if(settings.armed&&'Notification'in window&&Notification.permission==='default'){try{await Notification.requestPermission()}catch{}}updateAlarmBtn();renderChips();renderAlarmSheet();if(settings.armed)checkAlarms()};
+ $('#testBtn').onclick=()=>{unlockAudio();const d=selected||data[0];raiseAlarm({key:'test-'+Date.now(),level:'prep',region:d.id,title:`Test: ${d.name}`,why:'This is a test of the siren, notification and prep checklist.',test:true});renderAlarmSheet()};
+}
+function updateAlarmBtn(){const b=$('#alarmBtn');b.classList.toggle('armed',settings.armed);b.innerHTML=settings.armed?'🔔<span class="lbl"> Armed</span>':'🔕<span class="lbl"> Prep alarm</span>'}
+function setSpin(v){spin=v;$('#spin').innerHTML=v?'⏸<span class="lbl"> Rotation</span>':'▶<span class="lbl"> Rotation</span>'}
+$('#settingsBtn').onclick=()=>openSheet('data');$('#alarmBtn').onclick=()=>openSheet('alarm');
+document.addEventListener('pointerdown',()=>{if(settings.armed)unlockAudio()},{once:true});
+
+/* ───────────────────────── Controls & loop ───────────────────────── */
+document.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{filter=b.dataset.filter;document.querySelectorAll('[data-filter]').forEach(x=>x.classList.toggle('active',x===b));markers.forEach(m=>{let v=filter==='all'||m.d.type===filter;m.glow.visible=m.ring.visible=m.core.visible=m.alarmRing.visible=v});renderList()});
+$('#sortBtn').onclick=()=>{sortMode={editorial:'forecast',forecast:'momentum',momentum:'editorial'}[sortMode];$('#sortBtn').textContent={editorial:'↕ Editorial',forecast:'↕ Forecast',momentum:'↕ News momentum'}[sortMode];renderList()};
+$('#spin').onclick=()=>setSpin(!spin);
+$('#reset').onclick=()=>{selected=null;setSpin(innerWidth>850);globe.rotation.set(0,0,0);camera.position.set(0,1.1,8.7);controls.update();detail.innerHTML='<div class="eyebrow">Situation briefing</div><h2>Explore the planet</h2><p>Select a region to see its live forecast, news momentum, crowd odds and headlines.</p>';renderList()};
+const raycaster=new THREE.Raycaster(),mouse=new THREE.Vector2();let pointerStart=null;renderer.domElement.addEventListener('pointerdown',e=>{pointerStart={x:e.clientX,y:e.clientY}});renderer.domElement.addEventListener('pointerup',e=>{if(!pointerStart||Math.hypot(e.clientX-pointerStart.x,e.clientY-pointerStart.y)>9)return;pointerStart=null;mouse.set(e.clientX/innerWidth*2-1,-e.clientY/innerHeight*2+1);raycaster.setFromCamera(mouse,camera);let hits=raycaster.intersectObjects([earth,...targets.filter(t=>t.object.visible).map(t=>t.object)]);if(hits.length&&hits[0].object!==earth){let item=targets.find(t=>t.object===hits[0].object);if(item)select(item.d)}});
+let tick=0;function animate(){requestAnimationFrame(animate);tick+=.016;if(spin)globe.rotation.y+=.0009;
+  markers.forEach((m,i)=>{m.cur+=(m.k-m.cur)*.04;m.glow.scale.setScalar(m.cur*(1+Math.sin(tick*m.freq+i)*.15));m.ring.scale.setScalar(m.cur);m.ring.material.opacity=.55+.3*Math.sin(tick*m.freq*1.1+i);
+    if(m.alarm){const ph=(tick*(m.alarm==='prep'?1.4:.7)+i*.3)%1;m.alarmRing.scale.setScalar(m.cur*(1+ph*1.6));m.alarmRing.material.opacity=(1-ph)*(m.alarm==='prep'?.9:.55);m.alarmRing.material.color.set(m.alarm==='prep'?0xff526b:0xffb34f)}else m.alarmRing.material.opacity=0});
+  arcMeshes.forEach(a=>a.line.material.opacity=selected?((a.a===selected.id||a.b===selected.id)?.7:.07):.26);controls.update();renderer.render(scene,camera)}
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+
+/* ───────────────────────── Boot & schedule ───────────────────────── */
+function hydrateFromCache(){ /* paint instantly from last session */
+  for(const d of data){const n=store.get('gfl:c:news-'+d.id);if(n)live.news.by[d.id]=summarizeNews(n.d)}
+  const g=store.get('gfl:c:global');if(g)live.global=spikeStats(g.d);
+}
+function refreshAll(force){if(force){for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k&&/^gfl:c:(news|global|pm|heads|views-runs)/.test(k))store.del(k)}}loadViews();loadMarkets();loadNews();loadServerAlarms()}
+$('#dateline').textContent='AN INTERACTIVE GEOPOLITICAL ATLAS · '+new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}).toUpperCase();
+hydrateFromCache();updateAlarmBtn();renderList();renderChips();setSpin(spin);animate();
+refreshAll(false);
+setInterval(loadNews,TTL.news);setInterval(loadMarkets,TTL.markets);setInterval(loadViews,TTL.runs);setInterval(loadServerAlarms,5*MIN);setInterval(renderChips,30e3);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){loadMarkets();loadNews();loadServerAlarms()}});
+</script><script>window.addEventListener('error',function(e){if(e.message&&(/module|webgl|three|import/i).test(e.message)){let el=document.getElementById('loaderror');if(el)el.hidden=false}});setTimeout(()=>{if(!document.querySelector('#scene canvas')){let el=document.getElementById('loaderror');if(el)el.hidden=false}},3500);</script></body></html>

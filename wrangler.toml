@@ -1,0 +1,29 @@
+name = "fault-lines"
+main = "worker.js"
+compatibility_date = "2026-10-01"
+
+# Bundle the atlas page into the Worker (served at /)
+[[rules]]
+type = "Text"
+globs = ["**/*.html"]
+fallthrough = true
+
+# Prep-alarm check every 15 minutes (each run ≈ 90 s wall time, ~35 subrequests)
+[triggers]
+crons = ["*/15 * * * *"]
+
+# State for alarm de-duplication + market price history
+# Create with: wrangler kv namespace create STATE   → paste the id below
+[[kv_namespaces]]
+binding = "STATE"
+id = "PASTE_KV_NAMESPACE_ID_HERE"
+
+[vars]
+SENSITIVITY = "normal"          # low | normal | high
+NTFY_SERVER = "https://ntfy.sh"
+# PAGE_URL = "https://fault-lines.<you>.workers.dev"   # opened when you tap the phone alert
+
+# Secrets (not in this file):
+#   wrangler secret put NTFY_TOPIC    long random topic, also subscribe to it in the ntfy app
+#   wrangler secret put NTFY_TOKEN    optional, for protected topics
+#   wrangler secret put TEST_KEY      optional, enables GET /test-push?key=…
