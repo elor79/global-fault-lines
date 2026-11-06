@@ -17,6 +17,12 @@ On the globe, **marker size** follows the VIEWS forecast (log scale) and **pulse
 
 **Limits, stated plainly:** VIEWS extrapolates from recent violence. It is strong for ongoing wars and weak for sudden interstate escalation (Taiwan, Korea, the South China Sea). For those, the page relies on news momentum and market odds. Outlook labels are simple, documented threshold rules, not forecasts of specific events.
 
+Three upstream quirks worth knowing, all verified against the live APIs:
+
+- **GDELT rate-limits by IP and signals it with HTTP 200.** The refusal (`Please limit requests to one every 5 seconds…`) arrives with `Content-Type: application/json` but a plain-text body, so HTTP status alone cannot detect it. Both the page and the Worker surface that text instead of an opaque `JSON.parse` error; the cron stops pacing through the remaining regions after three consecutive refusals rather than burning ~88 s. On a blocked network (some cloud and CI egress IPs) the GDELT chip will stay red no matter what — the code is fine, the IP is not.
+- **The VIEWS `cm/sb` endpoint ignores country filters.** `?iso=804&isoab=UKR` and no filter at all all return the same 6876 rows across 7 pages (191 countries), so the page paginates and filters client-side.
+- **VIEWS has no Palestine entity.** The Gaza hotspot's forecast therefore reflects Israel (`ISR`) only; Gaza's own signal comes from news momentum and market odds.
+
 ## Prep alarm
 
 | Level | Triggers (normal sensitivity) |
@@ -46,6 +52,21 @@ Then:
 3. Set `PAGE_URL` in `wrangler.toml` to your workers.dev URL so that tapping an alert opens the page.
 
 Optional secrets: `NTFY_TOKEN` (for protected or self-hosted ntfy topics) and `TEST_KEY` (enables `GET /test-push?key=…`).
+
+## Run it locally
+
+```bash
+npx wrangler@latest dev --port 8787 --test-scheduled
+```
+
+KV is simulated locally, so no `wrangler login` is needed — but `wrangler.toml` must carry *some* value for the `STATE` namespace id (the shipped `PASTE_KV_NAMESPACE_ID_HERE` placeholder works for local dev; replace it with a real id before deploying).
+
+Then open <http://localhost:8787> and, to exercise the alarm cron once:
+
+```bash
+curl "http://localhost:8787/__scheduled?cron=*/15+*+*+*+*"   # returns immediately
+sleep 100 && curl http://localhost:8787/alarms               # the run itself takes ~90 s
+```
 
 ## Endpoints
 

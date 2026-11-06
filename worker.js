@@ -35,7 +35,7 @@ const REGIONS = [
   { id: 'iran', name: 'Iran / Persian Gulf', type: 'war', q: '(Iran OR Iranian OR Hormuz) (strike OR attack OR missile OR military OR retaliation)', pm: 'Iran', pmRe: /iran|hormuz|khamenei/i },
   { id: 'taiwan', name: 'Taiwan Strait', type: 'flash', q: 'Taiwan (PLA OR "Chinese military" OR drills OR blockade OR warships OR incursion)', pm: 'Taiwan', pmRe: /taiwan/i },
   { id: 'myanmar', name: 'Myanmar', type: 'human', q: '(Myanmar OR Burma) (airstrike OR fighting OR killed OR offensive OR clashes)', pm: 'Myanmar', pmRe: /myanmar|burma/i },
-  { id: 'congo', name: 'Eastern DR Congo', type: 'human', q: '("DR Congo" OR "eastern Congo" OR Goma OR M23 OR Kivu) (fighting OR killed OR attack OR clashes OR rebels)', pm: 'Congo', pmRe: /congo|m23|rwanda/i },
+  { id: 'congo', name: 'Eastern DR Congo', type: 'human', q: '("DR Congo" OR "eastern Congo" OR Goma OR M23 OR Kivu) (fighting OR killed OR attack OR clashes OR rebels)', pm: 'Congo', pmRe: /\bdrc\b|dr congo|democratic republic of the congo|eastern congo|\bm23\b|goma|\bkivu\b|rwanda/i },
   { id: 'sahel', name: 'Central Sahel', type: 'human', q: '(Mali OR "Burkina Faso" OR Niger OR Sahel) (attack OR jihadist OR killed OR militants OR ambush)', pm: 'Mali', pmRe: /\bmali\b|burkina|\bniger\b|sahel/i },
   { id: 'korea', name: 'Korean Peninsula', type: 'flash', q: '("North Korea" OR Pyongyang OR DPRK) (missile OR launch OR military OR nuclear OR artillery)', pm: 'North Korea', pmRe: /north korea|kim jong|dprk/i },
   { id: 'kashmir', name: 'India-Pakistan / Kashmir', type: 'flash', q: '(Kashmir OR "Line of Control" OR "India Pakistan") (attack OR firing OR militants OR strike OR killed)', pm: 'India Pakistan', pmRe: /india|pakistan|kashmir/i },
@@ -113,8 +113,12 @@ async function upstream(url, ctx) {
 }
 async function getJSON(url, ctx) {
   const r = await upstream(url, ctx); const t = await r.text();
-  if (!r.ok) throw new Error('HTTP ' + r.status);
-  return JSON.parse(t);
+  if (!r.ok) throw new Error('HTTP ' + r.status + (t.trim() ? ': ' + t.trim().slice(0, 120) : ''));
+  /* GDELT serves its rate-limit refusal as HTTP 200 with Content-Type: application/json
+     but a plain-text body, so status alone cannot be trusted. Surface the upstream text
+     instead of an opaque JSON.parse SyntaxError. */
+  try { return JSON.parse(t); }
+  catch { throw new Error(t.trim().slice(0, 120) || 'Empty response'); }
 }
 const gdeltURL = p => 'https://api.gdeltproject.org/api/v2/doc/doc?' + new URLSearchParams({ ...p, format: 'json' });
 
@@ -145,16 +149,27 @@ async function runChecks(env, ctx) {
     }
   } catch (e) { console.log('global', e.message); }
 
+  /* GDELT refuses with HTTP 200 + a plain-text "Please limit requests…" body. Once it is
+     refusing this IP there is no point pacing through all 16 regions for ~88 s, so give up
+     on news after a few consecutive refusals and let the market checks run unthrottled. */
+  const rateLimited = e => /please limit requests|HTTP 429/i.test(e.message || '');
+  let gdeltStrikes = 0, gdeltOff = false;
+
   for (const d of REGIONS) {
     const big = d.type !== 'human';
-    await sleep(5500); // GDELT: ≤1 request / 5 s
     try {
+      if (gdeltOff) throw new Error('GDELT skipped (rate-limited earlier this run)');
+      await sleep(5500); // GDELT: ≤1 request / 5 s
       const s = dailySpike(await getJSON(gdeltURL({ query: d.q, mode: 'timelinevol', timespan: '90d' }), ctx));
+      gdeltStrikes = 0;
       if (s?.ratio != null && s.z != null) {
         if (big && s.ratio >= 3 * k && s.z >= 4 * k) found.push({ key: 'news-' + d.id, level: 'prep', region: d.id, title: `${d.name}: sudden news surge`, why: `Today's conflict coverage is ${s.ratio.toFixed(1)}x its 30-day average (z ${s.z.toFixed(1)}).` });
         else if (s.ratio >= 2.2 * k && s.z >= 3 * k) found.push({ key: 'news-' + d.id, level: 'watch', region: d.id, title: `${d.name}: news spike`, why: `Today's conflict coverage is ${s.ratio.toFixed(1)}x its 30-day average (z ${s.z.toFixed(1)}).` });
       }
-    } catch (e) { console.log('news', d.id, e.message); }
+    } catch (e) {
+      console.log('news', d.id, e.message);
+      if (rateLimited(e) && ++gdeltStrikes >= 3) { gdeltOff = true; console.log('news', 'GDELT rate-limited, skipping remaining regions this run'); }
+    }
     try {
       const mk = parseMarkets(await getJSON('https://gamma-api.polymarket.com/public-search?' + new URLSearchParams({ q: d.pm, events_status: 'active' }), ctx), d.pmRe);
       for (const m of mk) {
@@ -213,6 +228,9 @@ export default {
     }
   },
   async scheduled(event, env, ctx) {
-    ctx.waitUntil(runChecks(env, ctx).then(r => console.log('checks', JSON.stringify(r))));
+    ctx.waitUntil(runChecks(env, ctx).then(
+      r => console.log('checks', JSON.stringify(r)),
+      e => console.log('checks failed', e?.stack || e?.message || String(e)),
+    ));
   },
 };
