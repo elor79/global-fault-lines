@@ -86,3 +86,13 @@ The HTML also works as a standalone file. GDELT can be called directly from the 
 - `global_fault_lines_v4.html`: the page (Three.js globe, live data layer, alarm engine)
 - `worker.js`: Cloudflare Worker (page hosting, proxy, cron alarm, ntfy push)
 - `wrangler.toml`: Worker config (cron every 15 min, KV binding, page bundled as text)
+
+## Contributing
+
+Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) for how to run it locally, the upstream API quirks that will confuse you first, and some good places to start.
+
+## License
+
+[MIT](LICENSE).
+
+The code is MIT; the data is not. VIEWS, GDELT and Polymarket each carry their own terms, and the editorial summaries in the page are written for context, not as authoritative reporting.
