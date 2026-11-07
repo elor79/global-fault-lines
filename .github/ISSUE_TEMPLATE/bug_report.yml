@@ -1,0 +1,55 @@
+name: Bug report
+description: Something behaves incorrectly
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before filing, please check the known upstream quirks in [CONTRIBUTING.md](../blob/main/CONTRIBUTING.md#things-that-will-confuse-you-first). A red GDELT chip is usually your network's IP being rate-limited, not a bug.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you saw, and what you expected instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Run `npx wrangler@latest dev --port 8787 --test-scheduled`
+        2. Open http://localhost:8787
+        3. ...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where does it happen?
+      options:
+        - The page (globe, panels, chips)
+        - The Worker (proxy, /alarms, /health)
+        - The cron / alarm rules
+        - Local dev only
+        - Deployed Worker only
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: chips
+    attributes:
+      label: Status chips
+      description: What do the VIEWS, GDELT and Polymarket chips show? Hover a red chip for the error text.
+      placeholder: "VIEWS: live · GDELT: unavailable (Please limit requests...) · Polymarket: live"
+
+  - type: textarea
+    id: console
+    attributes:
+      label: Console / Worker output
+      description: Browser console errors, or `wrangler dev` output. Please don't paste any secrets.
+      render: text

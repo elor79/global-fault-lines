@@ -43,9 +43,11 @@ The PREP checklist is Swiss-oriented: verify first via [Alertswiss](https://www.
 ```bash
 npm i -g wrangler && wrangler login
 wrangler kv namespace create STATE        # paste the id into wrangler.toml
-wrangler secret put NTFY_TOPIC            # long random topic name, e.g. gfl-<20 random chars>
+wrangler secret put NTFY_TOPIC            # optional: long random topic, e.g. gfl-<20 random chars>
 wrangler deploy
 ```
+
+`NTFY_TOPIC` is only needed for phone push. Skip it and everything else still works — the cron keeps evaluating the rules and `/alarms` keeps serving them to the page, which raises them in-browser.
 
 Then:
 

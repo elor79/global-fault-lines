@@ -1,0 +1,48 @@
+name: Add or fix a region
+description: Propose a new hotspot, or improve an existing region's queries
+labels: ["region"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Regions live in two places that must stay in sync: `data[]` in `global_fault_lines_v4.html` and `REGIONS` in `worker.js`.
+
+  - type: input
+    id: region
+    attributes:
+      label: Region
+      placeholder: e.g. Western Sahara, or "Eastern DR Congo (fix market matching)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: rationale
+    attributes:
+      label: Why this region
+      description: What makes it a conflict hotspot or strategic flashpoint worth tracking?
+    validations:
+      required: true
+
+  - type: input
+    id: gdelt
+    attributes:
+      label: Proposed GDELT query
+      description: "Boolean OR blocks cannot be nested — GDELT's one hard syntax rule."
+      placeholder: '(Country OR City) (attack OR killed OR clashes OR strike)'
+
+  - type: input
+    id: iso
+    attributes:
+      label: ISO3 code(s) for the VIEWS forecast
+      description: Leave blank if VIEWS has no model for it (as with Taiwan and the South China Sea).
+      placeholder: "ESH"
+
+  - type: textarea
+    id: polymarket
+    attributes:
+      label: Polymarket search term and regex
+      description: |
+        Please check for false positives. `/congo/` once matched a Republic of the Congo election market, which could have raised a false alarm for eastern DRC.
+      placeholder: |
+        pm: 'Morocco'
+        pmRe: /western sahara|polisario/i

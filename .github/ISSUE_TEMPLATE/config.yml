@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Upstream API quirks
+    url: https://github.com/elor79/global-fault-lines/blob/main/CONTRIBUTING.md#things-that-will-confuse-you-first
+    about: A red GDELT chip, a two-minute first load or an empty forecast is usually documented behaviour, not a bug.
+  - name: Alarm thresholds
+    url: https://github.com/elor79/global-fault-lines#prep-alarm
+    about: The rules that raise PREP and WATCH, and what sensitivity changes.
