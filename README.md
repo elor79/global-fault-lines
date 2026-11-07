@@ -4,6 +4,8 @@ A live, interactive 3D atlas of 16 conflict hotspots and flashpoints. It combine
 
 Everything runs from one Cloudflare Worker. It serves the page, proxies and caches the data sources, and checks the alarm rules every 15 minutes, pushing alerts to your phone.
 
+![The Global Fault Lines atlas: a 3D globe with conflict hotspot markers, a region list on the left and a live regional briefing on the right](docs/screenshot.jpg)
+
 ## Data sources
 
 | Signal | Source | Refresh |
